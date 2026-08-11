@@ -1,0 +1,256 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Private Chat</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LOGIN -->
+
+    <div id="loginBox" class="box">
+
+        <h1>Private Chat</h1>
+
+        <p>One room. Two people. Simple and private.</p>
+
+        <input
+            id="name"
+            type="text"
+            placeholder="Enter your name"
+            autocomplete="off"
+        >
+
+        <button
+            class="primary-btn"
+            onclick="createRoom()"
+        >
+            Create New Chat
+        </button>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <input
+            id="room"
+            type="text"
+            placeholder="Enter Chat ID"
+            autocomplete="off"
+        >
+
+        <button
+            class="secondary-btn"
+            onclick="joinRoom()"
+        >
+            Join Chat
+        </button>
+
+        <div
+            id="generatedRoom"
+            class="generated-room"
+        >
+
+            <span>Chat ID</span>
+
+            <strong id="newRoomId"></strong>
+
+            <button
+                onclick="copyRoomId()"
+                class="copy-btn"
+            >
+                Copy ID
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHAT -->
+
+    <div id="chatBox" class="chat-box">
+
+        <div class="header">
+
+            <div class="room-info">
+
+                <h2 id="roomName">
+                    ?? Private Room
+                </h2>
+
+                <span id="status">
+                    Waiting...
+                </span>
+
+            </div>
+
+            <div class="header-actions">
+
+                <span id="userCount">
+                    1/2
+                </span>
+
+                <button class="call-btn" onclick="startVoiceCall()" title="Voice Call" aria-label="Voice Call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3.1 5.18 2 2 0 0 1 5.1 3h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L9 10.73a16 16 0 0 0 4.27 4.27l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 21 15.9z"/></svg></button>
+
+                <button class="call-btn" onclick="startVideoCall()" title="Video Call" aria-label="Video Call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l5-3v10l-5-3z"/><rect x="2" y="5" width="13" height="14" rx="2"/></svg></button>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="messages"
+            class="messages"
+        ></div>
+
+
+        <form id="messageForm">
+
+    <input
+        id="imageInput"
+        type="file"
+        accept="image/*"
+        style="display:none"
+    >
+
+    <button
+        type="button"
+        id="imageBtn"
+        title="Send Image"
+        aria-label="Send Image"
+        onclick="document.getElementById('imageInput').click()"
+    >
+        📷
+    </button>
+
+    <input
+        id="message"
+        type="text"
+        placeholder="Type a message..."
+        autocomplete="off"
+    >
+
+    <button type="submit">
+        Send
+    </button>
+
+</form>
+
+    </div>
+
+
+    <!-- CALL -->
+
+    <div
+        id="callBox"
+        class="call-box"
+    >
+
+        <div class="call-header">
+
+            <div>
+
+                <strong id="callTitle">
+                    Call
+                </strong>
+
+                <span id="callStatus">
+                    Connecting...
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="videos">
+
+            <video
+                id="remoteVideo"
+                autoplay
+                playsinline
+            ></video>
+
+            <video
+                id="localVideo"
+                autoplay
+                muted
+                playsinline
+            ></video>
+
+        </div>
+
+
+        <div class="call-controls">
+
+    <button
+        id="muteBtn"
+        onclick="toggleMute()"
+        title="Mute microphone"
+        aria-label="Mute microphone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="2" width="6" height="13" rx="3"/>
+            <path d="M5 10a7 7 0 0 0 14 0"/>
+            <path d="M12 19v3"/>
+            <path d="M8 22h8"/>
+        </svg>
+    </button>
+
+    <button
+        id="speakerBtn"
+        onclick="showAudioOutputs()"
+        title="Speaker"
+        aria-label="Speaker">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.5 8.5a5 5 0 0 1 0 7"/>
+            <path d="M18.5 5.5a9 9 0 0 1 0 13"/>
+        </svg>
+    </button>
+
+    <button
+        id="cameraBtn"
+        onclick="toggleCamera()"
+        title="Turn camera off"
+        aria-label="Camera">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 10l6-3v10l-6-3"/>
+            <rect x="2" y="5" width="13" height="14" rx="2"/>
+        </svg>
+    </button>
+
+    <button
+        class="end-call"
+        onclick="endCall()"
+        title="End Call"
+        aria-label="End Call">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M4 14.5c4.5-3 11.5-3 16 0"/>
+            <path d="M7 14.5l-1 3"/>
+            <path d="M17 14.5l1 3"/>
+        </svg>
+    </button>
+
+</div>
+
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script src="app.js"></script>
+
+</body>
+</html>
+
+
+
